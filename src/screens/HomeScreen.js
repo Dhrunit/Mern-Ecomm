@@ -5,7 +5,6 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import Product from '../components/Product'
 import { Col, Row } from 'react-bootstrap'
-import axios from 'axios'
 
 const HomeScreen = () => {
 	const dispatch = useDispatch()
