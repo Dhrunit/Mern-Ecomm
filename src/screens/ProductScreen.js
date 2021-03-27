@@ -8,13 +8,15 @@ import {
 	ListGroup,
 	Button,
 	ListGroupItem,
+	Form,
 } from 'react-bootstrap'
 import Rating from '../components/Rating'
 import { listProductDetails } from '../actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
-const ProductScreen = ({ match }) => {
+const ProductScreen = ({ match, history }) => {
+	const [qty, setQty] = useState(1)
 	const dispatch = useDispatch()
 	const productDetails = useSelector((state) => state.productDetails)
 	const { loading, error, product } = productDetails
@@ -22,6 +24,9 @@ const ProductScreen = ({ match }) => {
 		dispatch(listProductDetails(match.params.id))
 	}, [dispatch, match])
 
+	const addToCartHandler = () => {
+		history.push(`/cart/${match.params.id}?qty=${qty}`)
+	}
 	return (
 		<>
 			<Link className='btn btn-light my-3' to='/'>
@@ -75,8 +80,35 @@ const ProductScreen = ({ match }) => {
 									</Col>
 								</Row>
 							</ListGroupItem>
+							{product.countInStock > 0 && (
+								<ListGroupItem>
+									<Row>
+										<Col>Qty</Col>
+										<Col>
+											<Form.Control
+												as='select'
+												onChange={(e) =>
+													setQty(e.target.value)
+												}>
+												{[
+													...Array(
+														product.countInStock
+													).keys(),
+												].map((x) => (
+													<option
+														key={x + 1}
+														value={x + 1}>
+														{x + 1}
+													</option>
+												))}
+											</Form.Control>
+										</Col>
+									</Row>
+								</ListGroupItem>
+							)}
 							<ListGroupItem>
 								<Button
+									onClick={addToCartHandler}
 									className='btn-block'
 									disabled={product.countInStock === 0}>
 									Add to cart
